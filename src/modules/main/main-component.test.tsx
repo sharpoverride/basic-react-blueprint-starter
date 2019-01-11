@@ -7,6 +7,9 @@ import MainRoute from './';
 
 import {validate, Length} from 'class-validator';
 
+import {observable, when} from "mobx";
+import {observer} from 'mobx-react';
+
 it('renders without crashing', () => {
   const div = document.createElement('div');
   ReactDOM.render(<BrowserRouter>
@@ -29,6 +32,20 @@ it('validates my class', async (done) => {
   const results = await validate(d);
 
   console.log('bce', results[0].constraints.length);
+
+  done();
+});
+
+it('manages state with mobx', async (done) => {
+  const index = observable.box(0);
+
+  setTimeout(() => {
+    index.set(1);
+  }, 1);
+
+  await when(() => index.get() === 1);
+
+  expect(index.get()).toBe(1);
 
   done();
 });
